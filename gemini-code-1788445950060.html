@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmed Effat // SOC Analyst Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           CSS VARIABLES (DARK & LIGHT MODE)
+           ========================================= */
+        :root {
+            --bg-dark: #070A0F;
+            --bg-panel: #11161F;
+            --bg-navy: #0D1219;
+            --cyan: #00E5FF;
+            --emerald: #10B981;
+            --thm-red: #BF2A2D;
+            --text-main: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --border-color: rgba(45, 55, 72, 0.6);
+            --nav-bg: rgba(7, 10, 15, 0.85);
+            --modal-bg: rgba(10, 14, 23, 0.9);
+        }
+
+        body.light-mode {
+            --bg-dark: #F3F4F6;
+            --bg-panel: #FFFFFF;
+            --bg-navy: #E5E7EB;
+            --cyan: #008394;
+            --emerald: #059669;
+            --thm-red: #D32F2F;
+            --text-main: #111827;
+            --text-muted: #4B5563;
+            --border-color: rgba(209, 213, 219, 0.8);
+            --nav-bg: rgba(243, 244, 246, 0.85);
+            --modal-bg: rgba(243, 244, 246, 0.95);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* =========================================
+           SOC ANIMATED BACKGROUND 
+           ========================================= */
+        .cyber-grid-bg {
+            position: fixed; top: -50px; left: 0; right: 0; bottom: -50px;
+            z-index: -2;
+            background-image: 
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+        
+        .cyber-orb-bg-1, .cyber-orb-bg-2 {
+            position: fixed; border-radius: 50%; filter: blur(120px);
+            z-index: -3; opacity: 0.15; pointer-events: none;
+            animation: floatOrb 25s ease-in-out infinite alternate;
+        }
+        .cyber-orb-bg-1 { width: 40vw; height: 40vw; background: var(--cyan); top: 10%; left: -10%; }
+        .cyber-orb-bg-2 { width: 50vw; height: 50vw; background: var(--emerald); bottom: -10%; right: -10%; animation-delay: -12s; }
+        
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(10vw, 15vh) scale(1.2); }
+        }
+
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, var(--bg-dark) 85%);
+            pointer-events: none; z-index: -1; transition: background 0.5s ease;
+        }
+
+        /* Typography */
+        h1, h2, .orbitron-font { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 1px; color: var(--text-main); }
+        .section-sig { font-family: 'Fira Code', monospace; color: var(--cyan); font-size: 0.85rem; margin-bottom: 0.5rem; display: block; letter-spacing: 2px; opacity: 0.8; }
+        h2 { font-size: 2.2rem; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; display: inline-block; }
+        .mono { font-family: 'Fira Code', monospace; }
+        .text-cyan { color: var(--cyan); }
+        .text-muted { color: var(--text-muted); }
+        .container { max-width: 1100px; margin: 0 auto; padding: 4rem 2rem; position: relative; z-index: 10;}
+
+        /* NAVIGATION & CYBER ORB TOGGLE */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 1.5rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; background: var(--nav-bg); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color); transition: background 0.5s ease;
+        }
+        .logo-sig { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--cyan); letter-spacing: 2px; font-size: 1.2rem;}
+        .nav-controls { display: flex; gap: 1rem; align-items: center; }
+        
+        .cyber-orb {
+            width: 45px; height: 45px; background: transparent; border: none;
+            position: relative; cursor: pointer; display: flex; justify-content: center; align-items: center;
+        }
+        .orb-core {
+            width: 14px; height: 14px; border-radius: 50%; background: var(--cyan); 
+            box-shadow: 0 0 15px var(--cyan), 0 0 25px var(--cyan); transition: 0.5s ease; z-index: 2;
+        }
+        .orb-ring {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border: 1px dashed var(--cyan); border-radius: 50%;
+            animation: spin-ring 6s linear infinite; transition: 0.5s ease; opacity: 0.5;
+        }
+        @keyframes spin-ring { 100% { transform: rotate(360deg); } }
+        .cyber-orb:hover .orb-ring { opacity: 1; animation-duration: 2s; border-style: solid; border-color: var(--text-main); }
+        .cyber-orb:hover .orb-core { transform: scale(1.2); }
+        body.light-mode .orb-core { background: var(--emerald); box-shadow: 0 0 15px var(--emerald), 0 0 25px var(--emerald); }
+        body.light-mode .orb-ring { border-color: var(--emerald); }
+
+        /* Buttons */
+        .btn {
+            display: inline-block; padding: 0.75rem 1.5rem; border: 1px solid var(--cyan);
+            color: var(--cyan); text-decoration: none; border-radius: 2px;
+            transition: all 0.3s ease; font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; margin-right: 1rem; margin-top: 1rem; cursor: pointer;
+            background: rgba(0,0,0,0.3); position: relative; overflow: hidden; z-index: 1; letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+        }
+        .btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.4), transparent); transition: all 0.5s ease; z-index: -1;
+        }
+        .btn:hover::before { left: 100%; }
+        .btn:hover { background: rgba(0, 229, 255, 0.1); box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); text-shadow: 0 0 5px var(--cyan); }
+        .btn-secondary { border-color: var(--text-main); color: var(--text-main); }
+        .btn-secondary:hover { border-color: var(--emerald); color: var(--emerald); box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); text-shadow: 0 0 5px var(--emerald);}
+
+        /* =========================================
+           1. HERO SECTION (COVER)
+           ========================================= */
+        #hero {
+            height: 100vh; min-height: 600px; display: flex; align-items: center; 
+            position: relative; padding: 0 2rem; max-width: 1200px; margin: 0 auto;
+        }
+        .hero-content { max-width: 800px; z-index: 2; position: relative; }
+        .terminal-inline { font-size: 0.85rem; color: var(--cyan); margin-bottom: 1.5rem; display: flex; align-items: center; min-height: 1.5rem; }
+        .cursor { display: inline-block; width: 8px; height: 15px; background: var(--cyan); animation: blink 1s step-end infinite; margin-left: 5px; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .hero-name { 
+            font-size: 3.8rem; margin-bottom: 0.5rem; line-height: 1.1; 
+            font-weight: 900; text-shadow: 0 0 20px rgba(0,0,0,0.8); 
+            display: flex; flex-direction: column; align-items: center; width: fit-content;
+        }
+        
+        .hero-slogan { font-size: 2rem; margin-bottom: 1.5rem; line-height: 1.3; font-weight: 700; border: none; padding-bottom: 0; text-shadow: 0 0 15px rgba(0,0,0,0.8); }
+        #hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+
+        .shield-bg-container { 
+            position: absolute; right: 0%; top: 50%; transform: translateY(-50%); 
+            height: 85vh; width: 85vh; max-height: 800px; max-width: 800px; 
+            z-index: 0; pointer-events: none; transition: 0.5s ease;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .shield-bg-container svg { width: 100%; height: 100%; object-fit: contain; overflow: visible; }
+        
+        @keyframes fall { 0% { transform: translateY(-150px); } 100% { transform: translateY(850px); } }
+        @keyframes pulse-line { 0%, 100% { opacity: 0.2; stroke-width: 1; } 50% { opacity: 0.8; stroke-width: 3; filter: url(#neon-glow); } }
+        .electric-line { animation: pulse-line 3s infinite; }
+        .electric-line:nth-child(1) { animation-delay: 0s; } .electric-line:nth-child(2) { animation-delay: 0.5s; }
+        .electric-line:nth-child(3) { animation-delay: 1s; } .electric-line:nth-child(4) { animation-delay: 1.5s; }
+        .electric-line:nth-child(5) { animation-delay: 2s; } .electric-line:nth-child(6) { animation-delay: 2.5s; }
+
+        /* =========================================
+           2. ABOUT & PHOTO
+           ========================================= */
+        .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: center; }
+        .about-top-flex { display: flex; gap: 1.5rem; align-items: flex-start; margin-bottom: 1.5rem; }
+        
+        .cyber-photo-frame {
+            position: relative; width: 140px; height: 140px; flex-shrink: 0;
+            border-radius: 8px; padding: 3px;
+            background: linear-gradient(45deg, var(--cyan), transparent, var(--emerald), transparent);
+            background-size: 200% 200%; animation: gradient-shift 3s ease infinite;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+        @keyframes gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .cyber-photo-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; background-color: var(--bg-navy); }
+        
+        .thinking-box { border-left: 2px solid var(--cyan); padding-left: 1.5rem; flex-grow: 1;}
+        .thinking-box ul { list-style: none; margin-bottom: 0.5rem; }
+        .thinking-box li { font-family: 'Fira Code', monospace; color: var(--text-main); font-size: 0.85rem; }
+        .thinking-box blockquote { color: var(--text-muted); font-style: italic; font-size: 0.9rem;}
+
+        .terminal-box {
+            background: #11161F; border: 1px solid rgba(0, 229, 255, 0.2); padding: 1.5rem;
+            border-radius: 6px; font-size: 0.85rem; color: #00E5FF;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); width: 100%; backdrop-filter: blur(10px);
+        }
+        .terminal-header { border-bottom: 1px solid #2D3748; padding-bottom: 0.5rem; margin-bottom: 1rem; font-size: 0.75rem; color: #9CA3AF; }
+        .terminal-line { min-height: 1.2rem; margin-bottom: 0.4rem; }
+
+        /* =========================================
+           CARDS WITH ROTATING GLOW & TOOL ICONS
+           ========================================= */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        
+        .glow-card {
+            position: relative; padding: 1.5rem; border-radius: 6px; z-index: 1;
+            background: rgba(17, 22, 31, 0.85); backdrop-filter: blur(10px);
+            overflow: hidden; transition: transform 0.3s ease; border: 1px solid var(--border-color);
+        }
+        body.light-mode .glow-card { background: rgba(255, 255, 255, 0.85); }
+        
+        .glow-card::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, var(--cyan), transparent 30%);
+            animation: rotate-glow 3s linear infinite; opacity: 0; z-index: -2; transition: opacity 0.3s ease;
+        }
+        .glow-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-color: transparent;}
+        .glow-card:hover::after { opacity: 1; }
+        @keyframes rotate-glow { 100% { transform: rotate(360deg); } }
+
+        .glow-card h4 { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; font-size: 1.2rem; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+        .glass-icon-wrapper {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: all 0.4s ease;
+        }
+        .tool-icon { width: 22px; height: 22px; fill: var(--text-main); transition: all 0.4s ease; opacity: 0.8;}
+        .glow-card:hover .glass-icon-wrapper { background: rgba(0, 229, 255, 0.1); border-color: var(--cyan); }
+        .glow-card:hover .tool-icon { fill: var(--cyan); opacity: 1; filter: drop-shadow(0 0 5px var(--cyan));}
+
+        body.light-mode .glass-icon-wrapper { background: rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.1); }
+        
+        .tag { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 3px; display: inline-block; margin-bottom: 1rem; font-family: 'Fira Code', monospace; }
+        .tag.hands-on { color: var(--emerald); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .tag.working { color: var(--cyan); background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.2); }
+        
+        .tool-meta { font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.8rem; }
+        .tool-data { font-size: 0.9rem; color: var(--text-main); }
+        .case-id { font-family: 'Fira Code', monospace; color: var(--cyan); font-size: 0.75rem; margin-bottom: 0.5rem; }
+        .project-card { cursor: pointer; }
+
+        /* =========================================
+           TIMELINES & BANNERS
+           ========================================= */
+        .timeline-wrapper { background: rgba(17, 22, 31, 0.85); backdrop-filter: blur(10px); padding: 2rem; border-radius: 6px; border: 1px solid var(--border-color); position: relative; overflow: hidden; transition: 0.5s ease; }
+        body.light-mode .timeline-wrapper { background: rgba(255, 255, 255, 0.85); }
+        
+        .timeline-item { margin-bottom: 1.5rem; border-left: 2px solid var(--border-color); padding-left: 1.5rem; position: relative; }
+        .timeline-item:last-child { margin-bottom: 0; border-left-color: transparent; }
+        .timeline-item::before { content: ''; position: absolute; left: -6px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--border-color); transition: 0.3s; }
+        .timeline-item:hover::before { transform: scale(1.5); }
+        .timeline-item.completed::before { background: var(--emerald); box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+        .timeline-item.studying::before { background: var(--cyan); box-shadow: 0 0 8px rgba(0, 229, 255, 0.4); }
+
+        .investigate-banner { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(13, 18, 25, 0.85); backdrop-filter: blur(10px); padding: 2rem; border: 1px solid var(--border-color); border-radius: 6px; transition: 0.5s ease; }
+        body.light-mode .investigate-banner { background: rgba(229, 231, 235, 0.85); }
+        .inv-item strong { display: block; color: var(--cyan); margin-bottom: 0.5rem; font-size: 0.95rem; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+        .inv-item span { display: inline-block; padding: 0.2rem 0.5rem; border: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); margin: 0 0.2rem 0.4rem 0; border-radius: 3px; transition: 0.3s; cursor: default; }
+        .inv-item span:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
+
+        /* =========================================
+           FOOTER & GLASSMORPHISM SOCIAL LOGOS
+           ========================================= */
+        footer { border-top: 1px solid var(--cyan); padding: 5rem 2rem; text-align: center; background: var(--bg-panel); margin-top: 2rem; position: relative; overflow: hidden; transition: 0.5s ease; box-shadow: 0 -10px 30px rgba(0, 229, 255, 0.05); }
+
+        .social-icons-container { display: flex; justify-content: center; align-items: center; gap: 1.5rem; margin-top: 2rem; }
+        
+        .social-link {
+            display: flex; align-items: center; justify-content: center;
+            width: 65px; height: 65px; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease; text-decoration: none; position: relative;
+        }
+        
+        .social-link svg { width: 32px; height: 32px; fill: var(--text-main); color: var(--text-main); transition: all 0.4s ease; opacity: 0.8; }
+
+        body.light-mode .social-link { background: rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.1); }
+        body.light-mode .social-link svg { fill: var(--text-main); color: var(--text-main); }
+        
+        /* Hover Effects */
+        .social-link.linkedin:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); border-color: var(--cyan); box-shadow: 0 10px 25px rgba(0, 229, 255, 0.2); }
+        .social-link.linkedin:hover svg { fill: var(--cyan); opacity: 1; filter: drop-shadow(0 0 5px var(--cyan)); transform: scale(1.1); }
+
+        .social-link.whatsapp:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); border-color: #25D366; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.2); }
+        .social-link.whatsapp:hover svg { fill: #25D366; opacity: 1; filter: drop-shadow(0 0 5px #25D366); transform: scale(1.1); }
+
+        /* Custom THM Inline SVG - Never breaks */
+        .social-link.thm:hover { border-color: var(--thm-red); box-shadow: 0 10px 25px rgba(191, 42, 45, 0.2); transform: translateY(-5px); background: rgba(255, 255, 255, 0.08);}
+        .social-link.thm:hover svg { transform: scale(1.1); filter: drop-shadow(0 0 5px var(--thm-red)); }
+        .social-link.thm:hover svg rect { stroke: var(--thm-red); }
+        .social-link.thm:hover svg text { fill: var(--thm-red); }
+
+        /* =========================================
+           ADVANCED JABAAR ANIMATIONS
+           ========================================= */
+        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal-left { opacity: 0; transform: translateX(-40px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal-right { opacity: 0; transform: translateX(40px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal-scale { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        
+        .active { opacity: 1 !important; transform: translate(0) scale(1) !important; }
+        .grid > div:nth-child(1) { transition-delay: 0.1s; }
+        .grid > div:nth-child(2) { transition-delay: 0.2s; }
+        .grid > div:nth-child(3) { transition-delay: 0.3s; }
+        .grid > div:nth-child(4) { transition-delay: 0.4s; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-bg); backdrop-filter: blur(8px);
+            z-index: 1000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content {
+            background: var(--bg-panel); border: 1px solid var(--cyan); border-radius: 6px;
+            padding: 2.5rem; width: 90%; max-width: 700px; position: relative;
+            transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 0 40px rgba(0, 229, 255, 0.15);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .close-modal { position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
+        .close-modal:hover { color: var(--cyan); transform: rotate(90deg); }
+
+        .case-flow { border-left: 2px solid var(--border-color); padding-left: 1.5rem; margin-top: 1.5rem; }
+        .case-step { position: relative; margin-bottom: 1.5rem; }
+        .case-step::before { content: ''; position: absolute; left: -1.9rem; top: 5px; width: 10px; height: 10px; background: var(--bg-panel); border: 2px solid var(--cyan); border-radius: 50%; box-shadow: 0 0 10px var(--cyan); transition: 0.5s ease; }
+        .case-step .meta-title { font-family: 'Orbitron', sans-serif; color: var(--cyan); font-size: 0.85rem; margin-bottom: 0.2rem; letter-spacing: 1px; }
+
+        @media (max-width: 900px) {
+            .shield-bg-container { right: -10%; height: 60vw; width: 60vw; opacity: 0.4; }
+            .hero-name { font-size: 2.5rem; }
+            .hero-slogan { font-size: 1.5rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            .about-top-flex { flex-direction: column; align-items: center; text-align: center; }
+            .thinking-box { border-left: none; padding-left: 0; border-top: 2px solid var(--cyan); padding-top: 1rem; margin-top: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SOC Animated Background -->
+    <div class="cyber-grid-bg"></div>
+    <div class="cyber-orb-bg-1"></div>
+    <div class="cyber-orb-bg-2"></div>
+
+    <!-- NAVIGATION & CYBER ORB TOGGLE -->
+    <nav>
+        <div class="logo-sig reveal-left active">AE // PORTFOLIO</div>
+        <div class="nav-controls reveal-right active">
+            <button id="theme-toggle" class="cyber-orb" title="Initialize System Protocol">
+                <span class="orb-core"></span>
+                <span class="orb-ring"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 1. COVER (HERO) -->
+    <section id="hero">
+        <div class="shield-bg-container">
+            <svg viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="8" result="blur1" />
+                        <feGaussianBlur stdDeviation="15" result="blur2" />
+                        <feMerge><feMergeNode in="blur2" /><feMergeNode in="blur1" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
+                    <clipPath id="shield-clip">
+                        <path d="M400 100 L650 200 C650 200 650 450 650 550 C650 700 400 780 400 780 C400 780 150 700 150 550 C150 450 150 200 150 200 Z" />
+                    </clipPath>
+                </defs>
+                <g fill="none" stroke="var(--cyan)" stroke-width="2" opacity="0.6">
+                    <path class="electric-line" d="M 150 200 L 50 180 L 0 250" />
+                    <path class="electric-line" d="M 150 550 L 70 600 L 30 530" />
+                    <path class="electric-line" d="M 650 200 L 750 160 L 800 220" />
+                    <path class="electric-line" d="M 650 550 L 750 600 L 800 520" />
+                    <path class="electric-line" d="M 400 100 L 350 30 L 450 0" />
+                    <path class="electric-line" d="M 400 780 L 430 830 L 360 860" />
+                </g>
+                <path d="M400 100 L650 200 C650 200 650 450 650 550 C650 700 400 780 400 780 C400 780 150 700 150 550 C150 450 150 200 150 200 Z" fill="rgba(11, 16, 25, 0.8)" stroke="var(--bg-panel)" stroke-width="20" style="transition: 0.5s ease;"/>
+                <path d="M400 100 L650 200 C650 200 650 450 650 550 C650 700 400 780 400 780 C400 780 150 700 150 550 C150 450 150 200 150 200 Z" fill="none" stroke="var(--cyan)" stroke-width="4" filter="url(#neon-glow)" opacity="0.9" />
+                <g clip-path="url(#shield-clip)">
+                    <rect x="0" y="0" width="800" height="800" fill="transparent" />
+                    <g id="binary-rain-group" font-family="'Fira Code', monospace"></g>
+                </g>
+            </svg>
+        </div>
+
+        <div class="hero-content">
+            <div class="terminal-inline mono">
+                <span id="hero-terminal-content"></span><span class="cursor"></span>
+            </div>
+            
+            <h1 class="hero-name orbitron-font reveal-left active">
+                <span>AHMED MOHAMED</span>
+                <span>EFFAT</span>
+            </h1>
+            
+            <h2 class="hero-slogan orbitron-font reveal-left active" style="transition-delay: 0.1s;">I DON'T JUST LEARN CYBERSECURITY.<br><span class="text-cyan">I INVESTIGATE IT.</span></h2>
+            <p class="mono text-muted reveal-left active" style="transition-delay: 0.2s;">SOC Intern | Junior SOC Analyst</p>
+            
+            <div class="reveal-up active" style="transition-delay: 0.3s;">
+                <a href="#projects" class="btn">View Case Files</a>
+                <a href="#contact" class="btn btn-secondary">Contact Me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. ABOUT & PHOTO -->
+    <section id="about" class="container">
+        <span class="section-sig reveal-left">AE // IDENTITY</span>
+        <h2 class="reveal-left">The Analyst Profile</h2>
+        
+        <div class="about-grid">
+            <div class="about-text">
+                <div class="about-top-flex">
+                    <div class="cyber-photo-frame reveal-scale">
+                        <img src="WhatsApp Image 2026-09-03 at 5.18.40 PM.jpeg" alt="Ahmed Mohamed Effat">
+                    </div>
+                    
+                    <div class="thinking-box reveal-right">
+                        <span class="section-sig" style="color:var(--cyan); margin-bottom: 1rem;">HOW I THINK</span>
+                        <ul>
+                            <li><span class="text-cyan">ALERT</span> ≠ INCIDENT</li>
+                            <li><span class="text-cyan">INDICATOR</span> ≠ CONCLUSION</li>
+                            <li><span class="text-cyan">PACKET</span> ≠ PROOF</li>
+                        </ul>
+                        <blockquote style="margin-top:0.8rem;">"Validate the signal. Correlate the evidence. Build the story."</blockquote>
+                    </div>
+                </div>
+
+                <p class="text-muted reveal-up" style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                    Third-year Computer Science student specializing in Cybersecurity, seeking a SOC Intern / Junior SOC Analyst role to apply hands-on skills in security monitoring, log analysis, and incident response, and support a team's Blue Team operations from day one.
+                </p>
+                <p class="text-muted reveal-up" style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                    My approach bridges the gap between infrastructure and security. By building networks from the ground up and actively monitoring them, I don't just see isolated alerts—I see the pathways attackers take.
+                </p>
+            </div>
+            
+            <div id="about-terminal" class="terminal-box mono reveal-right">
+                <div class="terminal-header">Terminal - root@soc-analyst:~</div>
+                <div id="about-terminal-content"></div>
+                <span class="cursor"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. EDUCATION -->
+    <section id="education" class="container">
+        <span class="section-sig reveal-left">AE // EDUCATION</span>
+        <h2 class="reveal-left">Education & Training</h2>
+        <div class="timeline-wrapper reveal-up">
+            <div class="timeline-item studying">
+                <h4 class="orbitron-font">Bachelor's Degree, Computer Science</h4>
+                <p class="text-cyan mono" style="font-size: 0.85rem;">Arab Open University (AOU) | 2023 - Present</p>
+                <p class="text-muted" style="font-size: 0.9rem; margin-top: 0.5rem;">Specializing in Cybersecurity and network security coursework.</p>
+            </div>
+            <div class="timeline-item completed">
+                <h4 class="orbitron-font">Cyber Security Incident Response Analyst</h4>
+                <p class="text-emerald mono" style="font-size: 0.85rem;">DEPI (Digital Egypt Pioneers Initiative) | Jul 2026 – Present</p>
+                <p class="text-muted" style="font-size: 0.9rem; margin-top: 0.5rem;">Hands-on training focused on incident response and cybersecurity operations.</p>
+            </div>
+            <div class="timeline-item studying">
+                <h4 class="orbitron-font">Advanced Certifications</h4>
+                <p class="text-cyan mono" style="font-size: 0.85rem;">Self-Study / In Progress</p>
+                <ul class="text-muted" style="font-size: 0.9rem; margin-top: 0.5rem; margin-left: 1rem;">
+                    <li>CCNA & CompTIA Security+</li>
+                    <li>ELearnSecurity Certified Incident Responder (eCIR)</li>
+                    <li>Certified Ethical Hacker (CEH)</li>
+                    <li>GIAC Security Operations Certified (GSOC) — SANS SEC450</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SKILLS -->
+    <section id="skills" class="container">
+        <span class="section-sig reveal-left">AE // SKILLS</span>
+        <h2 class="reveal-left">Tool Capabilities & Evidence</h2>
+        <p class="text-muted mono reveal-left" style="margin-bottom: 2rem; font-size: 0.85rem;">// I don't just list tools — I show where I used them.</p>
+        
+        <div class="grid">
+            <div class="glow-card reveal-up">
+                <h4>
+                    <div class="glass-icon-wrapper">
+                        <svg class="tool-icon" viewBox="0 0 24 24"><path d="M19.649 5.286l-4.707 13.784-3.844-8.824-2.81 4.542H2.5v-2h4.59l1.64-2.651 4.156 9.544 3.325-9.742 2.378 4.343h2.91v-2h-1.63z"/></svg>
+                    </div>
+                    WIRESHARK
+                </h4>
+                <span class="tag hands-on">[ Hands-On ]</span>
+                <div class="tool-meta">Used In:</div>
+                <div class="tool-data">PCAP Forensics Investigation</div>
+                <div class="tool-meta">Evidence:</div>
+                <div class="tool-data text-muted">DNS, HTTP, SMB2, TLS, TCP Streams</div>
+                <div class="tool-meta">Demonstrates:</div>
+                <div class="tool-data text-cyan">Traffic Analysis, Payload Extraction</div>
+            </div>
+            <div class="glow-card reveal-up">
+                <h4>
+                    <div class="glass-icon-wrapper">
+                        <svg class="tool-icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                    </div>
+                    SIEM & EDR
+                </h4>
+                <span class="tag hands-on">[ Hands-On ]</span>
+                <div class="tool-meta">Tools:</div>
+                <div class="tool-data">Splunk, ELK, Security Onion, Velociraptor</div>
+                <div class="tool-meta">Evidence:</div>
+                <div class="tool-data text-muted">Log analysis, Alert triage</div>
+                <div class="tool-meta">Demonstrates:</div>
+                <div class="tool-data text-cyan">Security Monitoring, IR</div>
+            </div>
+            <div class="glow-card reveal-up">
+                <h4>
+                    <div class="glass-icon-wrapper">
+                        <svg class="tool-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    </div>
+                    NETWORK SECURITY
+                </h4>
+                <span class="tag working">[ Working Knowledge ]</span>
+                <div class="tool-meta">Tools:</div>
+                <div class="tool-data">Cisco Packet Tracer, Nmap, Suricata, Snort</div>
+                <div class="tool-meta">Evidence:</div>
+                <div class="tool-data text-muted">ACLs, OSPF, TACACS+, RADIUS</div>
+                <div class="tool-meta">Demonstrates:</div>
+                <div class="tool-data text-cyan">Secure Design, Threat Detection</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. EXPERIENCE -->
+    <section id="experience" class="container">
+        <span class="section-sig reveal-left">AE // EXPERIENCE</span>
+        <h2 class="reveal-left">Work Experience</h2>
+        <div class="timeline-wrapper reveal-up">
+            <div class="timeline-item completed">
+                <h4 class="orbitron-font">Network Security Summer Training</h4>
+                <p class="text-emerald mono" style="font-size: 0.85rem;">ITIDA & NTI | Aug 24 – Sep 18, 2025</p>
+                <p class="text-muted" style="font-size: 0.9rem; margin-top: 0.5rem;">Completed 120 hours of intensive training covering network security fundamentals and SOC operations. Achieved a final score of 98.5%. Practiced security monitoring, log analysis, and incident detection.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. SERVICES -->
+    <section id="services" class="container">
+        <span class="section-sig reveal-left">AE // SERVICES</span>
+        <h2 class="reveal-left">What I Can Investigate</h2>
+        <div class="investigate-banner reveal-scale">
+            <div class="inv-item">
+                <strong>01. NETWORK TRAFFIC</strong>
+                <span>DNS</span> <span>HTTP</span> <span>TLS</span> <span>SMB2</span>
+            </div>
+            <div class="inv-item">
+                <strong>02. SECURITY ACTIVITY</strong>
+                <span>Alerts</span> <span>Logs</span> <span>Suspicious Events</span>
+            </div>
+            <div class="inv-item">
+                <strong>03. RECONNAISSANCE</strong>
+                <span>Scanning</span> <span>Enumeration</span> <span>Banner Grabbing</span>
+            </div>
+            <div class="inv-item">
+                <strong>04. INDICATORS</strong>
+                <span>IPs</span> <span>Domains</span> <span>Hashes</span> <span>URLs</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. PROJECTS -->
+    <section id="projects" class="container">
+        <span class="section-sig reveal-left">AE // PROJECTS</span>
+        <h2 class="reveal-left">Investigation Portfolio</h2>
+        <p class="mono text-muted reveal-left" style="margin-bottom: 2rem;">> Click on any case file to open the detailed investigation log.</p>
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div class="glow-card project-card reveal-up" onclick="openCaseModal('INC-001')">
+                <div class="case-id">CASE FILE // INC-001</div>
+                <h4>Network Forensics — PCAP Investigation</h4>
+                <span class="tag hands-on">INDEPENDENT LAB</span>
+                <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Analysed network traffic to identify a payload disguised as an image and recovered exfiltrated data from a multipart HTTP POST request.</p>
+                <div class="text-cyan mono" style="font-size: 0.8rem; margin-top: 1rem;">[+] Click to view findings</div>
+            </div>
+            <div class="glow-card project-card reveal-up" onclick="openCaseModal('LAB-002')">
+                <div class="case-id">CASE FILE // LAB-002</div>
+                <h4>SOC Home Lab Deployment</h4>
+                <span class="tag hands-on">HANDS-ON LAB</span>
+                <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Deployed agents on endpoints and generated simulated attacks to trigger SIEM alerts for security monitoring and log analysis.</p>
+                <div class="text-cyan mono" style="font-size: 0.8rem; margin-top: 1rem;">[+] Click to view findings</div>
+            </div>
+            <div class="glow-card project-card reveal-up" onclick="openCaseModal('NET-003')">
+                <div class="case-id">CASE FILE // NET-003</div>
+                <h4>Network Security Architecture</h4>
+                <span class="tag hands-on">HANDS-ON LAB</span>
+                <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Completed hands-on Packet Tracer labs covering SSH, Syslog, NTP, TACACS+, RADIUS, OSPF authentication, and extended ACLs.</p>
+                <div class="text-cyan mono" style="font-size: 0.8rem; margin-top: 1rem;">[+] Click to view findings</div>
+            </div>
+            <div class="glow-card project-card reveal-up" onclick="openCaseModal('REC-004')">
+                <div class="case-id">CASE FILE // REC-004</div>
+                <h4>Nmap Reconnaissance Lab</h4>
+                <span class="tag working">AUTHORIZED LAB</span>
+                <p class="text-muted" style="margin-top: 0.5rem; font-size: 0.9rem;">Executed various scan types and service enumeration to understand network mapping and SIEM detectability.</p>
+                <div class="text-cyan mono" style="font-size: 0.8rem; margin-top: 1rem;">[+] Click to view findings</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. ACHIEVEMENTS -->
+    <section id="achievements" class="container">
+        <span class="section-sig reveal-left">AE // ACHIEVEMENTS</span>
+        <h2 class="reveal-left">Achievements</h2>
+        <div class="glow-card reveal-scale" style="border-left: 3px solid var(--cyan);">
+            <strong class="orbitron-font" style="color: var(--cyan); font-size: 1.4rem; display: block; margin-bottom: 0.5rem;">TRYHACKME: TOP 4%</strong>
+            <p class="text-muted" style="margin-bottom:0; font-size:0.95rem;">Ranked in the Top 4% of users through consistent and continuous hands-on engagement with defensive and offensive security modules.</p>
+        </div>
+    </section>
+
+    <!-- 10. CONTACT -->
+    <footer id="contact">
+        <div class="container reveal-up">
+            <span class="section-sig">AE // CONTACT</span>
+            <h2 style="border:none; margin-bottom: 1rem; font-size: 2.8rem; padding-bottom: 0;">READY FOR THE NEXT INVESTIGATION.</h2>
+            <p class="mono text-cyan" style="margin-bottom: 2rem;">
+                > TARGET: SOC Internships | Junior SOC Analyst | Blue Team Roles
+            </p>
+            <div style="margin-bottom: 2rem;">
+                <a href="mailto:ahmedeffat75@gmail.com" class="btn">Let's Connect</a>
+                <a href="Ahmed-Mohamed-Effat- CV.pdf" class="btn btn-secondary" download>Download CV</a>
+            </div>
+            
+            <div class="social-icons-container">
+                <!-- LinkedIn -->
+                <a href="https://linkedin.com/in/ahmed-mohammed-2e2" class="social-link linkedin" title="LinkedIn" target="_blank">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                </a>
+                
+                <!-- TryHackMe Vector -->
+                <a href="[ADD THM LINK]" class="social-link thm" title="TryHackMe" target="_blank">
+                    <svg viewBox="0 0 100 100" width="36" height="36">
+                        <rect x="5" y="5" width="90" height="90" rx="15" fill="none" stroke="currentColor" stroke-width="8"/>
+                        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="Orbitron, sans-serif" font-weight="900" font-size="34" fill="currentColor">THM</text>
+                    </svg>
+                </a>
+                
+                <!-- WhatsApp -->
+                <a href="https://wa.me/+201022777950" class="social-link whatsapp" title="WhatsApp" target="_blank">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.88-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.347-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.876 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CASE STUDY MODAL -->
+    <div id="case-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('case-modal')">×</button>
+            <span id="case-meta" class="section-sig"></span>
+            <h2 id="case-title" style="margin-bottom: 0.5rem; border:none; font-size: 1.8rem;"></h2>
+            <div class="case-flow" id="case-content">
+                <!-- Content Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Cyber Orb Theme Toggle Logic
+        const themeBtn = document.getElementById('theme-toggle');
+        const savedTheme = localStorage.getItem('portfolio-theme');
+        
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                localStorage.setItem('portfolio-theme', 'light');
+            } else {
+                localStorage.setItem('portfolio-theme', 'dark');
+            }
+        });
+
+        // Hero Terminal Typing
+        const heroTerminal = document.getElementById('hero-terminal-content');
+        const heroText = "> SYSTEM STATUS: ONLINE | SEC-PROFILE: AE-01 | PROTOCOLS: ACTIVE";
+        let heroChar = 0;
+        function typeHero() {
+            if (heroTerminal && heroChar < heroText.length) {
+                heroTerminal.innerHTML += heroText.charAt(heroChar);
+                heroChar++;
+                setTimeout(typeHero, 50);
+            }
+        }
+        setTimeout(typeHero, 800);
+
+        // Binary Rain for Shield
+        const rainGroup = document.getElementById('binary-rain-group');
+        if (rainGroup && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            let rainHTML = '';
+            const numCols = 20; const startX = 140;
+            for(let i = 0; i < numCols; i++) {
+                let x = startX + (i * 26);
+                let delay = (Math.random() * 5).toFixed(2);
+                let duration = (4 + Math.random() * 4).toFixed(2);
+                let opacity = (0.3 + Math.random() * 0.6).toFixed(2);
+                let fontSize = 16 + Math.floor(Math.random() * 6);
+                let columnStr = '';
+                let len = 8 + Math.floor(Math.random() * 8);
+                for(let j = 0; j < len; j++) {
+                    let char = Math.random() > 0.5 ? '1' : '0';
+                    columnStr += `<tspan x="${x}" dy="${fontSize * 1.2}">${char}</tspan>`;
+                }
+                rainHTML += `<text class="rain-drop" x="${x}" y="-200" fill="var(--cyan)" font-size="${fontSize}" opacity="${opacity}" style="animation: fall ${duration}s linear ${delay}s infinite;">${columnStr}</text>`;
+            }
+            rainGroup.innerHTML = rainHTML;
+        }
+
+        // About Terminal Typing
+        const aboutTerminalLines = [
+            "> whoami", "ahmed_effat",
+            "> cat /career/objective.txt", "Target: SOC Intern / Junior SOC Analyst.",
+            "> ./check_status.sh", "[+] Strong foundation in network engineering.", "[+] Hands-on SIEM & PCAP analysis.", "[+] Ready for investigation."
+        ];
+        let aboutLine = 0; let aboutChar = 0; let aboutTypingStarted = false;
+        function typeAboutTerminal() {
+            const container = document.getElementById('about-terminal-content');
+            if (aboutLine < aboutTerminalLines.length) {
+                if (aboutChar === 0) {
+                    const div = document.createElement('div');
+                    div.className = 'terminal-line'; div.id = 'about-line-' + aboutLine;
+                    if (!aboutTerminalLines[aboutLine].startsWith(">")) { div.style.color = "#9CA3AF"; }
+                    container.appendChild(div);
+                }
+                if (aboutChar < aboutTerminalLines[aboutLine].length) {
+                    document.getElementById('about-line-' + aboutLine).innerHTML += aboutTerminalLines[aboutLine].charAt(aboutChar);
+                    aboutChar++; setTimeout(typeAboutTerminal, 30);
+                } else {
+                    aboutLine++; aboutChar = 0; setTimeout(typeAboutTerminal, 400);
+                }
+            }
+        }
+
+        // Scroll Reveal
+        document.addEventListener("DOMContentLoaded", function() {
+            const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-scale');
+            const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        if (entry.target.id === 'about-terminal' && !aboutTypingStarted) {
+                            aboutTypingStarted = true; setTimeout(typeAboutTerminal, 500);
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+            
+            revealElements.forEach(el => {
+                if(!el.classList.contains('active')) { revealOnScroll.observe(el); }
+            });
+        });
+
+        // Modal Logic
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = 'auto'; }
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active'); document.body.style.overflow = 'auto';
+            }
+        }
+
+        const caseDatabase = {
+            'INC-001': {
+                meta: 'CASE FILE // INC-001 | STATUS: CLOSED', title: 'Network Forensics — PCAP Investigation',
+                flow: [
+                    { t: 'INITIAL SIGNAL', d: 'Suspicious network capture flagged for potential data exfiltration.' },
+                    { t: 'DATA COLLECTION', d: 'Extracted PCAP loaded into Wireshark; correlated with VirusTotal.' },
+                    { t: 'ANALYSIS', d: 'Analysed DNS, HTTP, SMB2, TLS, and TCP stream traffic to identify a payload disguised as an image.' },
+                    { t: 'CORRELATION', d: 'Mapped attacker behavior to MITRE ATT&CK techniques.' },
+                    { t: 'FINDINGS', d: 'Recovered exfiltrated data from a multipart HTTP POST request and extracted IOCs.' },
+                    { t: 'MITRE ATT&CK', d: 'Reconnaissance, Lateral Movement, Exfiltration.' },
+                    { t: 'TAKEAWAY', d: 'Proved capability in deep-packet traffic dissection and payload extraction.' }
+                ]
+            },
+            'LAB-002': {
+                meta: 'CASE FILE // LAB-002 | STATUS: ACTIVE', title: 'SOC Home Lab Deployment',
+                flow: [
+                    { t: 'INITIAL SIGNAL', d: 'Need for a practical environment to generate, observe, and analyze alerts.' },
+                    { t: 'ACTION', d: 'Deployed Wazuh agents on Windows endpoints; executed simulated attacks via Kali Linux.' },
+                    { t: 'EVIDENCE', d: 'Ingested logs matching Wazuh detection rules within the SIEM dashboard.' },
+                    { t: 'FINDINGS', d: 'Successfully generated, observed, and detected attack signatures.' },
+                    { t: 'SKILLS DEMONSTRATED', d: 'SIEM Deployment, Log Collection, Endpoint Monitoring.' }
+                ]
+            },
+            'NET-003': {
+                meta: 'CASE FILE // NET-003 | STATUS: CLOSED', title: 'Network Security Architecture',
+                flow: [
+                    { t: 'INITIAL SIGNAL', d: 'Requirement to design a resilient, defensive network topology.' },
+                    { t: 'ACTION', d: 'Configured VLANs, STP, EtherChannel, NAT, OSPF, and extended ACLs.' },
+                    { t: 'EVIDENCE', d: 'Functional routing tables, secure access controls (SSH, TACACS+, RADIUS, Syslog, NTP).' },
+                    { t: 'FINDINGS', d: 'Established a secure baseline architecture.' },
+                    { t: 'SKILLS DEMONSTRATED', d: 'Secure Network Design, Routing & Switching.' }
+                ]
+            },
+            'REC-004': {
+                meta: 'CASE FILE // REC-004 | STATUS: CLOSED', title: 'Nmap Reconnaissance',
+                flow: [
+                    { t: 'INITIAL SIGNAL', d: 'Understanding attacker network mapping techniques to defend against enumeration.' },
+                    { t: 'ACTION', d: 'Executed TCP connect, SYN stealth, and UDP scans against authorized targets.' },
+                    { t: 'EVIDENCE', d: 'Service enumeration and banner grabbing outputs.' },
+                    { t: 'FINDINGS', d: 'Documented network footprint and evaluated SIEM detectability of various scan types.' },
+                    { t: 'SKILLS DEMONSTRATED', d: 'Active Reconnaissance, Vulnerability Identification.' }
+                ]
+            }
+        };
+
+        function openCaseModal(caseId) {
+            const data = caseDatabase[caseId]; if(!data) return;
+            document.getElementById('case-meta').innerText = data.meta;
+            document.getElementById('case-title').innerText = data.title;
+            const contentDiv = document.getElementById('case-content'); contentDiv.innerHTML = '';
+            
+            data.flow.forEach((step, index) => {
+                contentDiv.innerHTML += `
+                    <div class="case-step reveal-right active" style="transition-delay: ${index * 0.1}s; opacity:0; animation: fadeInRight 0.5s forwards ${index * 0.1}s;">
+                        <div class="meta-title">${step.t}</div><p>${step.d}</p>
+                    </div>`;
+            });
+            openModal('case-modal');
+        }
+    </script>
+    <style> @keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } } </style>
+</body>
+</html>
